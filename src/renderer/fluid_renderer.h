@@ -13,4 +13,5 @@ public:
     void Clear() override;
     void SetClearColor(float r, float g, float b, float a) override;
 };
+
 }

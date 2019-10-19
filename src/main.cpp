@@ -30,19 +30,27 @@ int main(int argc, char* args[])
         SDL_Event e;
         while(SDL_PollEvent(&e)) 
         {
-            if(e.type == SDL_QUIT || (e.type == SDL_KEYUP && e.key.keysym.sym  == SDLK_ESCAPE))
+            if(e.type == SDL_QUIT) running = false;
+            if(e.type == SDL_KEYUP)
             {
-                running = false;
+                switch(e.key.keysym.sym)
+                {
+                    case SDLK_ESCAPE:
+                    {
+                        running = false;
+                    } break;
+                }
             }
         }
 
         renderer.SetClearColor(.3f, .3f, .7f, 1.f);
         renderer.Clear();
-        
+
         ps.Update();
         ps.GetParticleSystem()->dumpParticles(0, 1);
 
         window.Swap();
     }
+
     return 0;
 }

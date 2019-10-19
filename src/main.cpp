@@ -1,25 +1,14 @@
 #include "utils/logger.h"
-#include "renderer/shader.h"
+#include "renderer/fluid_renderer.h"
 #include "renderer/window.h"
-#include "simulation/particleSystem.h"
-
-extern "C" void cudaInit(int argc, char **args);
-
-void update_particle_system(ParticleSystem* p)
-{
-    p->setIterations(1);
-    p->setDamping(1.f);
-    p->setGravity(0.0003f);
-    p->setCollideSpring(.5f);
-    p->setCollideDamping(0.02f);
-    p->setCollideShear(0.1f);
-    p->setCollideAttraction(0.0f);
-    p->update(0.5f);
-}
+#include "simulation/particle_system_wrapper.h"
 
 int main(int argc, char* args[]) 
 {
     Window window = Window("OpenGL Fluid Rendering", 800, 600, 4, 5, true, false);
+    fluidity::FluidRenderer renderer;
+    fluidity::ParticleSystemWrapper ps;
+
     if(!window.Init()) 
     {
         LOG_ERROR("Unable to create window..");
@@ -27,9 +16,13 @@ int main(int argc, char* args[])
     }
     else LOG_WARNING("Window successfully created.");
 
-    cudaInit(argc, args);
-    ParticleSystem* particleSystem = new ParticleSystem(16000, {200, 200, 200}, true);
-    particleSystem->reset(ParticleSystem::CONFIG_GRID);
+    if(!ps.Init(argc, args))
+    {
+        LOG_ERROR("Unable to initialize particle system.");
+        return 0;
+    }
+    else LOG_WARNING("Particle system successfully initialized.");
+
 
     bool running = true;
     while(running) 
@@ -43,10 +36,12 @@ int main(int argc, char* args[])
             }
         }
 
-        update_particle_system(particleSystem);
-        particleSystem->dumpParticles(0, 1);
-        glClearColor(.4f, .4f, .4f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.SetClearColor(.3f, .3f, .7f, 1.f);
+        renderer.Clear();
+        
+        ps.Update();
+        ps.GetParticleSystem()->dumpParticles(0, 1);
+
         window.Swap();
     }
     return 0;

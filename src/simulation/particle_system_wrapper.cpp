@@ -22,7 +22,7 @@ auto ParticleSystemWrapper::Update() -> void
 {
     m_particleSystem->setIterations(m_iterations);
     m_particleSystem->setDamping(m_damping);
-    m_particleSystem->setGravity(m_gravity);
+    m_particleSystem->setGravity(-m_gravity);
     m_particleSystem->setCollideSpring(m_collideSpring);
     m_particleSystem->setCollideDamping(m_collideDamping);
     m_particleSystem->setCollideShear(m_collideShear);

@@ -1,13 +1,14 @@
 #include "utils/logger.h"
 #include "renderer/fluid_renderer.h"
 #include "renderer/window.h"
+#include "utils/glcall.h"
 #include "simulation/particle_system_wrapper.h"
 
 int main(int argc, char* args[]) 
 {
     Window window = Window("OpenGL Fluid Rendering", 800, 600, 4, 5, true, false);
-    fluidity::FluidRenderer renderer;
     fluidity::ParticleSystemWrapper ps;
+    fluidity::FluidRenderer* renderer;
 
     if(!window.Init()) 
     {
@@ -23,6 +24,7 @@ int main(int argc, char* args[])
     }
     else LOG_WARNING("Particle system successfully initialized.");
 
+    renderer = new fluidity::FluidRenderer();
 
     bool running = true;
     while(running) 
@@ -43,11 +45,13 @@ int main(int argc, char* args[])
             }
         }
 
-        renderer.SetClearColor(.3f, .3f, .7f, 1.f);
-        renderer.Clear();
+        renderer->SetClearColor(.3f, .3f, .7f, 1.f);
+        renderer->Clear();
 
         ps.Update();
-        ps.GetParticleSystem()->dumpParticles(0, 1);
+        renderer->SetNumberOfParticles(ps.GetParticleSystem()->getNumParticles());
+        renderer->SetVAO(ps.GetParticleSystem()->getCurrentPosVao());
+        renderer->Render();
 
         window.Swap();
     }

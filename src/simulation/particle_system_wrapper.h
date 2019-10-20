@@ -29,8 +29,8 @@ private:
     const float m_collideAttraction = 0.f;
     const float m_timestep          = 0.5f;
     
-    const int m_numParticles = 16000;
-    const uint3 m_gridSize   = { 300, 300, 300 };
+    const int m_numParticles = 16384;
+    const uint3 m_gridSize   = { 64, 64, 64 };
 
     ParticleSystem* m_particleSystem;
 };

@@ -145,7 +145,17 @@ ParticleSystem::_initialize(int numParticles)
 
     if (m_bUseOpenGL)
     {
+
         m_posVbo = createVBO(memSize);
+        glGenVertexArrays(1, &m_posVao);
+        glBindVertexArray(m_posVao);
+        glBindBuffer(GL_ARRAY_BUFFER, m_posVbo);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
         registerGLBufferObject(m_posVbo, &m_cuda_posvbo_resource);
     }
     else
@@ -225,6 +235,7 @@ ParticleSystem::_finalize()
     {
         unregisterGLBufferObject(m_cuda_colorvbo_resource);
         unregisterGLBufferObject(m_cuda_posvbo_resource);
+        glDeleteVertexArrays(1, &m_posVao);
         glDeleteBuffers(1, (const GLuint *)&m_posVbo);
         glDeleteBuffers(1, (const GLuint *)&m_colorVBO);
     }
@@ -385,9 +396,11 @@ ParticleSystem::setArray(ParticleArray array, const float *data, int start, int 
                 if (m_bUseOpenGL)
                 {
                     unregisterGLBufferObject(m_cuda_posvbo_resource);
+                    glBindVertexArray(m_posVao);
                     glBindBuffer(GL_ARRAY_BUFFER, m_posVbo);
                     glBufferSubData(GL_ARRAY_BUFFER, start*4*sizeof(float), count*4*sizeof(float), data);
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindVertexArray(0);
                     registerGLBufferObject(m_posVbo, &m_cuda_posvbo_resource);
                 }
                 else

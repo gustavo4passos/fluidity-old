@@ -54,6 +54,12 @@ class ParticleSystem
         {
             return m_posVbo;
         }
+
+        unsigned int getCurrentPosVao()     const
+        {
+            return m_posVao;
+        }
+        
         unsigned int getColorBuffer()       const
         {
             return m_colorVBO;
@@ -170,6 +176,7 @@ class ParticleSystem
 
         uint   m_gridSortBits;
 
+        uint   m_posVao;
         uint   m_posVbo;            // vertex buffer object for particle positions
         uint   m_colorVBO;          // vertex buffer object for colors
 

@@ -51,6 +51,10 @@ extern "C"
             printf("No CUDA Capable devices found, exiting...\n");
             exit(EXIT_SUCCESS);
         }
+        else
+        {
+            printf("[INFO] Successfully initialized CUDA device.\n");
+        }
     }
 
     void allocateArray(void **devPtr, size_t size)

@@ -1,7 +1,5 @@
 # Prerequisites
-*.d
-
-# Compiled Object files
+*.d # Compiled Object files
 *.slo
 *.lo
 *.o
@@ -36,3 +34,8 @@ build/
 
 # .vscode
 .vscode
+
+# vim exec files
+run.sh
+build.sh
+rebuild.sh

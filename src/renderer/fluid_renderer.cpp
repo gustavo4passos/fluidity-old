@@ -49,9 +49,9 @@ namespace fluidity
         m_fluidShader.SetUniformMat4("projection", glm::value_ptr(projectionMatrix));
         m_fluidShader.SetUniform1f("pointRadius", m_pointRadius);
 
-        float radius = 0.001;
-        float camX = std::sin(SDL_GetTicks() * radius);
-        float camZ = std::cos(SDL_GetTicks() * radius);
+        // float radius = 0.001;
+        // float camX = std::sin(SDL_GetTicks() * radius);
+        // float camZ = std::cos(SDL_GetTicks() * radius);
 
         glm::vec3 cameraPos = glm::vec3(3, 0.f, -2.f);
         glm::vec3 cameraTarget = glm::vec3(0.f, -0.5f, 0.f);

@@ -1,7 +1,6 @@
 #include "utils/logger.h"
 #include "renderer/fluid_renderer.h"
 #include "renderer/window.h"
-#include "utils/glcall.h"
 #include "simulation/particle_system_wrapper.h"
 
 int main(int argc, char* args[]) 

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <particleSystem.h>
-#include "assert.h"
+#include <assert.h>
+#include "../utils/export_directives.h"
 
 namespace fluidity
 {
 
-class ParticleSystemWrapper {
+class EXPORT ParticleSystemWrapper {
 public: 
     explicit ParticleSystemWrapper()
     : m_particleSystem(nullptr),
@@ -38,8 +39,8 @@ private:
     // const int m_numParticles = 16384;
     const uint3 m_gridSize   = { 64, 64, 64 };
 
-    bool m_paused;
     ParticleSystem* m_particleSystem;
+    bool m_paused;
 };
 
 }

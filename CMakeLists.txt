@@ -19,6 +19,8 @@ file(GLOB RENDERING_SOURCES ./src/renderer/*.cpp)
 file(GLOB SIMULATION_SOURCES ./src/simulation/*.cpp)
 file(GLOB SOURCES ./src/*.cpp)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 cuda_add_library(particleSystemLib SHARED  
 ./libs/cuda-simulation/src/particleSystem_cuda.cu
 ./libs/cuda-simulation/src/particleSystem.cpp )
@@ -34,3 +36,12 @@ add_executable(fluidity
     ${SIMULATION_SOURCES})
 
 target_link_libraries(fluidity GLEW::GLEW SDL2::SDL2main SDL2::SDL2 particleSystemLib)
+
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    # G++
+    target_compile_options(fluidity PRIVATE -Wall -Wextra)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    # MSVC
+    target_compile_options(fluidity PRIVATE /EHsc /MTd /W2 /c)
+    target_compile_definitions(fluidity PRIVATE WIN_EXPORT)
+endif()

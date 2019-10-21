@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(opengl-fluidrendering)
+project(fluidity)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 find_package(SDL2 2.0 CONFIG REQUIRED)
@@ -28,9 +28,9 @@ set_property(TARGET particleSystemLib
 
 target_link_libraries(particleSystemLib ${CUDA_LIBRARIES} GLEW::GLEW GLUT::GLUT)
 
-add_executable(opengl-fluidrendering 
+add_executable(fluidity
     ${SOURCES}
     ${RENDERING_SOURCES} 
     ${SIMULATION_SOURCES})
 
-target_link_libraries(opengl-fluidrendering GLEW::GLEW SDL2::SDL2main SDL2::SDL2 particleSystemLib)
+target_link_libraries(fluidity GLEW::GLEW SDL2::SDL2main SDL2::SDL2 particleSystemLib)

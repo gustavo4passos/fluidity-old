@@ -6,8 +6,14 @@ namespace fluidity
 class Renderer 
 {
 public:
-    virtual void Clear() = 0;
-    virtual void SetClearColor(float r, float g, float b, float a) = 0;
+	Renderer() { }
+    virtual auto Clear()  -> void = 0;
+	virtual auto Render() -> void = 0;
+    virtual auto SetClearColor(
+		float r, 
+		float g, 
+		float b, 
+		float a) -> void = 0;
 };
 
 }

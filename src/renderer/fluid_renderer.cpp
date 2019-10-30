@@ -53,7 +53,7 @@ namespace fluidity
         // float camX = std::sin(SDL_GetTicks() * radius);
         // float camZ = std::cos(SDL_GetTicks() * radius);
 
-        glm::vec3 cameraPos = glm::vec3(3, 0.f, -2.f);
+        glm::vec3 cameraPos = glm::vec3(3, 0.f, -1.f);
         glm::vec3 cameraTarget = glm::vec3(0.f, -0.5f, 0.f);
         glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
         glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up);

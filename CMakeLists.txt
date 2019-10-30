@@ -25,8 +25,8 @@ cuda_add_library(particleSystemLib SHARED
 ./libs/cuda-simulation/src/particleSystem_cuda.cu
 ./libs/cuda-simulation/src/particleSystem.cpp )
 
-set_property(TARGET particleSystemLib 
-             PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+#set_property(TARGET particleSystemLib 
+             #PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 
 target_link_libraries(particleSystemLib ${CUDA_LIBRARIES} GLEW::GLEW GLUT::GLUT)
 

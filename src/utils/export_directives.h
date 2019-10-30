@@ -2,9 +2,9 @@
 
 #ifdef _WIN32
     #ifdef WIN_EXPORT
-        #define EXPORT __declspec
+        #define EXPORT __declspec( dllexport )
     #else
-        #define EXPORT __declsped
+        #define EXPORT __declspec( dllimport )
     #endif
 #else
     #if __GNUC__ >= 4

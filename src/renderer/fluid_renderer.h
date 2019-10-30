@@ -1,18 +1,19 @@
 #pragma once
+
 #include "renderer.h"
 #include "shader.h"
-
+#include "../utils/export_directives.h"
 
 namespace fluidity
 {
 
-class FluidRenderer : public Renderer
+class EXPORT FluidRenderer : public Renderer
 {
 public:
     explicit FluidRenderer(
         float aspectRatio = 1920 / 1080.f, 
         float pointRadius  = 6.f);
-	
+        	
 	FluidRenderer(const FluidRenderer&) = delete;
 
     auto Init()  -> bool;

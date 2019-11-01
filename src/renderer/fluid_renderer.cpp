@@ -10,12 +10,12 @@
 namespace fluidity
 {
     FluidRenderer::FluidRenderer(float aspectRatio, float pointRadius)
-    : Renderer(),
-	m_fluidShader("../../shaders/sphere_rendering.vert", "../../shaders/sphere_rendering.frag"),
-    m_currentVAO(0),
-    m_currentNumberOfParticles(0),
-    m_aspectRatio(aspectRatio),
-    m_pointRadius(pointRadius)
+    :   Renderer(),
+	    m_fluidShader("../../shaders/sphere_rendering.vert", "../../shaders/sphere_rendering.frag"),
+        m_currentVAO(0),
+        m_currentNumberOfParticles(0),
+        m_aspectRatio(aspectRatio),
+        m_pointRadius(pointRadius)
     { 
         GLCall(glEnable(GL_DEPTH_TEST));
         GLCall(glEnable(GL_PROGRAM_POINT_SIZE));

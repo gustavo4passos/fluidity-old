@@ -1,13 +1,17 @@
 #include "utils/logger.h"
 #include "renderer/fluid_renderer.h"
+#include "renderer/fluid_surfaces.h"
 #include "renderer/window.h"
 #include "simulation/particle_system_wrapper.h"
 
 int main(int argc, char* args[]) 
 {
-    Window window = Window("Fluidity", 1366, 768, 4, 5, true, false);
+    const unsigned int WINDOW_WIDTH = 1366;
+    const unsigned int WINDOW_HEIGHT = 768;
+    Window window = Window("Fluidity", WINDOW_WIDTH, WINDOW_HEIGHT, 4, 5, true, false);
     fluidity::ParticleSystemWrapper ps;
     fluidity::FluidRenderer* renderer;
+    fluidity::FluidSurfaces fs(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     if(!window.Init()) 
     {
@@ -24,6 +28,11 @@ int main(int argc, char* args[])
     else LOG_WARNING("Particle system successfully initialized.");
 
     renderer = new fluidity::FluidRenderer(966.f / 544.f, 6.f);
+
+    if(!fs.Init()){
+        LOG_ERROR("Unable to initialized fluid surfaces.");
+        return 0;
+    }
 
     bool running = true;
     bool paused = false;

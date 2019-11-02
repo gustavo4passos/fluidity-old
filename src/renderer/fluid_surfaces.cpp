@@ -1,20 +1,27 @@
 #include "fluid_surfaces.h"
 #include "../utils/glcall.h"
 #include "../utils/logger.h"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace fluidity
 {
-    FluidSurfaces::FluidSurfaces(unsigned width, unsigned height)
-    :   m_frameBuffer(0),
+    FluidSurfaces::FluidSurfaces(unsigned bufferWidth, unsigned bufferHeight, float pointRadius)
+    :   m_surfacesShader(nullptr),
+        m_currentVAO(0),
+        m_frameBuffer(0),
         m_frontSurfaceBuffer(0),
         m_backSurfaceBuffer(0),
-        m_bufferWidth(width),
-        m_bufferHeight(height)
+        m_currentNumberOfParticles(0),
+        m_bufferWidth(bufferWidth),
+        m_bufferHeight(bufferHeight),
+        m_pointRadius(pointRadius)
     {}
 
     
-    bool FluidSurfaces::Init()
+    auto FluidSurfaces::Init() -> bool
     {
+        m_surfacesShader = new Shader("../../shaders/surface_rendering.vert", "../../shaders/surface_rendering.frag");
+
         GLCall(glGenFramebuffers(1, &m_frameBuffer));
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
 
@@ -37,7 +44,61 @@ namespace fluidity
 
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
+        m_surfacesShader->Bind();
+        m_surfacesShader->SetUniform1f("pointRadius", m_pointRadius);
+        m_surfacesShader->Unbind();
+
         return true;
     }
 
+    auto FluidSurfaces::Render() -> void
+    {
+        GLboolean isBlendEnabled;
+        GLboolean isDepthTestEnabled;
+
+        GLCall(glGetBooleanv(GL_BLEND, &isBlendEnabled));
+        GLCall(glGetBooleanv(GL_DEPTH_TEST, &isDepthTestEnabled));
+
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunci(0, GL_ONE, GL_ONE));
+        GLCall(glBlendEquationi(0, GL_MAX));
+        GLCall(glDisable(GL_DEPTH_TEST));
+        GLCall(glClearColor(0.f, 0.f, 0.f, 1.0));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        GLCall(glActiveTexture(GL_TEXTURE0));
+
+        m_surfacesShader->Bind();
+        GLCall(glBindVertexArray(m_currentVAO));
+
+        GLCall(glDrawArrays(GL_POINTS, 0, m_currentNumberOfParticles));
+
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+        GLCall(glBindVertexArray(0));
+        m_surfacesShader->Unbind();
+
+        if(!isBlendEnabled) GLCall(glDisable(GL_BLEND));
+        if(isDepthTestEnabled) GLCall(glEnable(GL_DEPTH_TEST));
+    }
+
+    auto FluidSurfaces::SetVAO(GLuint vao) -> void
+    {
+        m_currentVAO = vao;
+    }
+
+    auto FluidSurfaces::SetNumberOfParticles(unsigned n) -> void
+    {
+        m_currentNumberOfParticles = n;
+    }
+
+    auto FluidSurfaces::SetTransformationMatrices(
+        const glm::mat4 &projectionMatrix,
+        const glm::mat4 &view) -> void
+    {
+        m_surfacesShader->Bind();
+        m_surfacesShader->SetUniformMat4("projection", glm::value_ptr(projectionMatrix));
+        m_surfacesShader->SetUniformMat4("view", glm::value_ptr(view));
+        m_surfacesShader->Unbind();
+
+    }
 }

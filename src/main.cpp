@@ -11,7 +11,6 @@ int main(int argc, char* args[])
     Window window = Window("Fluidity", WINDOW_WIDTH, WINDOW_HEIGHT, 4, 5, true, false);
     fluidity::ParticleSystemWrapper ps;
     fluidity::FluidRenderer* renderer;
-    fluidity::FluidSurfaces fs(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     if(!window.Init()) 
     {
@@ -27,9 +26,10 @@ int main(int argc, char* args[])
     }
     else LOG_WARNING("Particle system successfully initialized.");
 
-    renderer = new fluidity::FluidRenderer(966.f / 544.f, 6.f);
+    renderer = new fluidity::FluidRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 6.f);
 
-    if(!fs.Init()){
+    if(!renderer->Init())
+    {
         LOG_ERROR("Unable to initialized fluid surfaces.");
         return 0;
     }
@@ -80,6 +80,7 @@ int main(int argc, char* args[])
         renderer->Clear();
 
         ps.Update();
+
         renderer->SetNumberOfParticles(ps.GetParticleSystem()->getNumParticles());
         renderer->SetVAO(ps.GetParticleSystem()->getCurrentPosVao());
         renderer->Render();

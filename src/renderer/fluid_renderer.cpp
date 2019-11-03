@@ -45,11 +45,15 @@ namespace fluidity
         m_fluidSurfaces->SetNumberOfParticles(n);
     }
 
-    auto  FluidRenderer::Init() -> bool 
+    auto FluidRenderer::Init() -> bool 
     {
         GLCall(glEnable(GL_PROGRAM_POINT_SIZE));
 
-        m_fluidSurfaces = new FluidSurfaces(m_windowWidth, m_windowHeight, m_pointRadius);
+        m_fluidSurfaces = new FluidSurfaces(
+            m_windowWidth, 
+            m_windowHeight, 
+            m_pointRadius,
+            FAR_PLANE);
         m_textureRenderer = new TextureRenderer();
 
         if(!m_fluidSurfaces->Init() || !m_textureRenderer->Init()) return false;  
@@ -60,15 +64,21 @@ namespace fluidity
     auto FluidRenderer::Render() -> void
     {
         m_fluidShader.Bind();
-        glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.f), m_aspectRatio, 0.1f, 100.f);
-        m_fluidShader.SetUniformMat4("projection", glm::value_ptr(projectionMatrix));
+        glm::mat4 projectionMatrix = glm::perspective(
+            glm::radians(45.f), 
+            m_aspectRatio, 
+            NEAR_PLANE, 
+            FAR_PLANE);
+        m_fluidShader.SetUniformMat4(
+            "projection", 
+            glm::value_ptr(projectionMatrix));
         m_fluidShader.SetUniform1f("pointRadius", m_pointRadius);
 
-        // float radius = 0.001;
-        // float camX = std::sin(SDL_GetTicks() * radius);
-        // float camZ = std::cos(SDL_GetTicks() * radius);
+        float radius = 0.001;
+        float camX = std::sin(SDL_GetTicks() * 0.5 * radius);
+        float camZ = std::cos(SDL_GetTicks() * 0.5 * radius);
 
-        glm::vec3 cameraPos = glm::vec3(3, 0.f, -1.f);
+        glm::vec3 cameraPos = glm::vec3(1 + 3 * camX, 0.f, 1 + -1.f * camZ);
         glm::vec3 cameraTarget = glm::vec3(0.f, -0.5f, 0.f);
         glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
         glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up);
@@ -88,6 +98,7 @@ namespace fluidity
         m_fluidSurfaces->Render();
 
         m_textureRenderer->SetTexture(m_fluidSurfaces->GetFrontSurface());
+        GLCall(glEnable(GL_DEPTH_TEST));
         Clear();
         m_textureRenderer->Render();
     }

@@ -9,7 +9,11 @@ namespace fluidity
 class FluidSurfaces 
 {
 public:
-    FluidSurfaces(unsigned bufferWidth, unsigned bufferHeight, float pointRadius);
+    FluidSurfaces(
+        unsigned bufferWidth, 
+        unsigned bufferHeight, 
+        float pointRadius,
+        float farPlane);
 
     auto Init() -> bool;
     auto Render() -> void;
@@ -33,6 +37,7 @@ private:
     unsigned m_bufferHeight;
 
     float m_pointRadius;
+    float m_farPlane;
 };
 
 }

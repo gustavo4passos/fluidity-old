@@ -5,7 +5,11 @@
 
 namespace fluidity
 {
-    FluidSurfaces::FluidSurfaces(unsigned bufferWidth, unsigned bufferHeight, float pointRadius)
+    FluidSurfaces::FluidSurfaces(
+        unsigned bufferWidth, 
+        unsigned bufferHeight, 
+        float pointRadius,
+        float farPlane)
     :   m_surfacesShader(nullptr),
         m_currentVAO(0),
         m_frameBuffer(0),
@@ -14,7 +18,8 @@ namespace fluidity
         m_currentNumberOfParticles(0),
         m_bufferWidth(bufferWidth),
         m_bufferHeight(bufferHeight),
-        m_pointRadius(pointRadius)
+        m_pointRadius(pointRadius),
+        m_farPlane(farPlane)
     {}
 
     
@@ -35,7 +40,6 @@ namespace fluidity
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             LOG_ERROR("Framebuffer is not complete.");
-
             return false;
         }
         
@@ -60,25 +64,33 @@ namespace fluidity
         GLCall(glGetBooleanv(GL_DEPTH_TEST, &isDepthTestEnabled));
 
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
+        GLCall(glClearColor(0.f, 0.f, 0.f, 0.f));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        
         GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunci(0, GL_ONE, GL_ONE));
+        GLCall(glBlendFunci(0, GL_ONE, GL_ONE_MINUS_CONSTANT_COLOR));
         GLCall(glBlendEquationi(0, GL_MAX));
         GLCall(glDisable(GL_DEPTH_TEST));
-        GLCall(glClearColor(0.f, 0.f, 0.f, 1.0));
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
-        GLCall(glActiveTexture(GL_TEXTURE0));
 
+        GLfloat minz[] = { -m_farPlane, -m_farPlane, -m_farPlane, 0.f };
+        GLCall(glClearTexImage(m_frontSurfaceBuffer, 0, GL_RGBA, GL_FLOAT, minz));
+        GLCall(glActiveTexture(GL_TEXTURE0));
         m_surfacesShader->Bind();
         GLCall(glBindVertexArray(m_currentVAO));
-
         GLCall(glDrawArrays(GL_POINTS, 0, m_currentNumberOfParticles));
 
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
         GLCall(glBindVertexArray(0));
         m_surfacesShader->Unbind();
 
-        if(!isBlendEnabled) GLCall(glDisable(GL_BLEND));
-        if(isDepthTestEnabled) GLCall(glEnable(GL_DEPTH_TEST));
+        if(!isBlendEnabled)
+        {
+            GLCall(glDisable(GL_BLEND));
+        }
+        if(isDepthTestEnabled) 
+        {
+            GLCall(glEnable(GL_DEPTH_TEST));
+        }
     }
 
     auto FluidSurfaces::SetVAO(GLuint vao) -> void

@@ -34,6 +34,9 @@ private:
 
     float m_aspectRatio;
     float m_pointRadius;
+
+    const GLfloat NEAR_PLANE = 0.1f;
+    const GLfloat FAR_PLANE  = 100.f;
 };
 
 }

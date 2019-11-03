@@ -1,6 +1,7 @@
 #version 450 core
 
 layout (location = 0) out vec4 frontSurface;
+in vec4 vParticlePos;
 
 void main() 
 {
@@ -13,7 +14,5 @@ void main()
 
     float frontSurfaceDepth = sqrt(1.0 - magnitude);
 
-    relativePos.z = frontSurfaceDepth;  
-
-    frontSurface = vec4(frontSurfaceDepth);
+    frontSurface = vec4(vParticlePos.z, -vParticlePos.z, 0.0, 1.0);
 }

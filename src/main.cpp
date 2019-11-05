@@ -1,6 +1,5 @@
 #include "utils/logger.h"
 #include "renderer/fluid_renderer.h"
-#include "renderer/fluid_surfaces.h"
 #include "renderer/window.h"
 #include "simulation/particle_system_wrapper.h"
 

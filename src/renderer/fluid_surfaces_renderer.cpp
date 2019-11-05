@@ -1,11 +1,12 @@
-#include "fluid_surfaces.h"
+#include "fluid_surfaces_renderer.h"
 #include "../utils/glcall.h"
 #include "../utils/logger.h"
+#include <assert.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace fluidity
 {
-    FluidSurfaces::FluidSurfaces(
+    FluidSurfaceRenderers::FluidSurfaceRenderers(
         unsigned bufferWidth, 
         unsigned bufferHeight, 
         float pointRadius,
@@ -23,7 +24,7 @@ namespace fluidity
     {}
 
     
-    auto FluidSurfaces::Init() -> bool
+    auto FluidSurfaceRenderers::Init() -> bool
     {
         m_surfacesShader = new Shader("../../shaders/surface_rendering.vert", "../../shaders/surface_rendering.frag");
 
@@ -55,8 +56,10 @@ namespace fluidity
         return true;
     }
 
-    auto FluidSurfaces::Render() -> void
+    auto FluidSurfaceRenderers::Render() -> void
     {
+        assert(m_surfacesShader != nullptr);
+        
         GLboolean isBlendEnabled;
         GLboolean isDepthTestEnabled;
 
@@ -93,17 +96,17 @@ namespace fluidity
         }
     }
 
-    auto FluidSurfaces::SetVAO(GLuint vao) -> void
+    auto FluidSurfaceRenderers::SetVAO(GLuint vao) -> void
     {
         m_currentVAO = vao;
     }
 
-    auto FluidSurfaces::SetNumberOfParticles(unsigned n) -> void
+    auto FluidSurfaceRenderers::SetNumberOfParticles(unsigned n) -> void
     {
         m_currentNumberOfParticles = n;
     }
 
-    auto FluidSurfaces::SetTransformationMatrices(
+    auto FluidSurfaceRenderers::SetTransformationMatrices(
         const glm::mat4 &projectionMatrix,
         const glm::mat4 &view) -> void
     {

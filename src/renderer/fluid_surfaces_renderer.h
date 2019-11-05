@@ -6,10 +6,10 @@
 namespace fluidity
 {
 
-class FluidSurfaces 
+class FluidSurfaceRenderers 
 {
 public:
-    FluidSurfaces(
+    FluidSurfaceRenderers(
         unsigned bufferWidth, 
         unsigned bufferHeight, 
         float pointRadius,

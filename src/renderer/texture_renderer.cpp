@@ -5,8 +5,8 @@ namespace fluidity
 {
     TextureRenderer::TextureRenderer() 
     :   m_textureShader(nullptr),
-        m_VAO(0),
         m_VBO(0),
+        m_VAO(0),
         m_currentTexture(0)
     { }
 
@@ -61,7 +61,6 @@ namespace fluidity
             "../../shaders/texture_rendering.frag");
 
         return true;
-
     }
 
     auto TextureRenderer::Render() -> void

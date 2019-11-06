@@ -2,7 +2,8 @@
 
 #include "renderer.h"
 #include "shader.h"
-#include "fluid_surfaces.h"
+#include "fluid_surfaces_renderer.h"
+#include "surface_smoothing_pass.h"
 #include "texture_renderer.h"
 #include "../utils/export_directives.h"
 
@@ -24,9 +25,9 @@ public:
     auto SetClearColor(float r, float g, float b, float a) -> void;
 
 private:
-    FluidSurfaces *m_fluidSurfaces;
+    FluidSurfaceRenderers *m_fluidSurfaces;
+    SurfaceSmoothingPass* m_surfaceSmoothingPass;
     TextureRenderer *m_textureRenderer;
-    Shader m_fluidShader;
     GLuint m_currentVAO;
     unsigned m_currentNumberOfParticles;
     unsigned m_windowWidth;

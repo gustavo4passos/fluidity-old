@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(fluidity)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(SDL2 2.0 CONFIG REQUIRED)
 find_package(GLEW REQUIRED)

@@ -58,7 +58,7 @@ namespace fluidity
             m_windowWidth,
             m_windowHeight,
             4U,
-            3U);
+            5U);
 
         if(!m_fluidSurfaces->Init())
         {
@@ -114,13 +114,19 @@ namespace fluidity
 
         // m_fluidShader.Unbind();
 
-        m_fluidSurfaces->SetTransformationMatrices(projectionMatrix, view);
+        m_fluidSurfaces->SetTransformationMatrices(
+            projectionMatrix, 
+            view);
+
         m_fluidSurfaces->Render();
 
-        m_surfaceSmoothingPass->SetUnfilteredSurfaces(m_fluidSurfaces->GetFrontSurface());
+        m_surfaceSmoothingPass->SetUnfilteredSurfaces(
+            m_fluidSurfaces->GetFrontSurface());
         m_surfaceSmoothingPass->Render();
         
-        m_textureRenderer->SetTexture(m_surfaceSmoothingPass->GetSmoothedSurfaces());
+        m_textureRenderer->SetTexture(
+            m_surfaceSmoothingPass->GetSmoothedSurfaces());
+
         GLCall(glEnable(GL_DEPTH_TEST));
         Clear();
         m_textureRenderer->Render();

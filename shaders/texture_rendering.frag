@@ -7,6 +7,6 @@ uniform sampler2D tex;
 void main()
 {
     vec4 texColor = texture(tex, texCoord);
-    fragmentColor = vec4(0.2, 0, texColor.r - 3, 1.0);
-    if(texColor.a > 0) fragmentColor.b = -texColor.g - 2.3;
+    fragmentColor = vec4(texColor.r * 0.2, 0, 0, 1.0);
+    if(texColor.a > 0 && texColor.g < 0) fragmentColor.b = -texColor.g * 0.1;
 }

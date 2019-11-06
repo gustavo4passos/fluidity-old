@@ -32,6 +32,7 @@ private:
     unsigned m_nIterations;
 
     GLuint m_fbo;
+    GLuint m_unfilteredSurfaces;
     GLuint m_currentWorkingSurfaces;
     GLuint m_smoothedSurfaces;
 

@@ -15,6 +15,7 @@ namespace fluidity
         m_kernelRadius(kernelRadius),
         m_nIterations(nIterations),
         m_fbo(0),
+        m_unfilteredSurfaces(0),
         m_currentWorkingSurfaces(0),
         m_smoothedSurfaces(0),
         m_bilateralFilter(nullptr)
@@ -96,18 +97,18 @@ namespace fluidity
             nullptr));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));    
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));    
-        GLCall(glFramebufferTexture2D(
-            GL_FRAMEBUFFER,
-            GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_2D,
-            m_smoothedSurfaces,
-            0));
+        // GLCall(glFramebufferTexture2D(
+        //     GL_FRAMEBUFFER,
+        //     GL_COLOR_ATTACHMENT0,
+        //     GL_TEXTURE_2D,
+        //     m_smoothedSurfaces,
+        //     0));
 
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        {
-            LOG_ERROR("Framebuffer is not complete.");
-            return false;
-        }
+        // if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        // {
+        //     LOG_ERROR("Framebuffer is not complete.");
+        //     return false;
+        // }
 
         unsigned attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
         
@@ -123,7 +124,7 @@ namespace fluidity
 
     auto SurfaceSmoothingPass::SetUnfilteredSurfaces(const GLuint unfilteredSurfaces) -> void
     {
-        m_currentWorkingSurfaces = unfilteredSurfaces;
+        m_unfilteredSurfaces = unfilteredSurfaces;
     }
 
     auto SurfaceSmoothingPass::Render() -> void
@@ -134,23 +135,42 @@ namespace fluidity
         m_bilateralFilter->Bind();
         m_bilateralFilter->SetInt("kernelRadius", m_kernelRadius);
 
+        GLCall(glBindVertexArray(m_screenQuadVao));
         GLCall(glActiveTexture(GL_TEXTURE0));
-        for(unsigned i = 0; i < m_nIterations; i++)
-        {
-            GLCall(glBindTexture(GL_TEXTURE_2D, m_currentWorkingSurfaces));
-            glFramebufferTexture2D(
-                GL_TEXTURE_2D,
+        glBindTexture(GL_TEXTURE_2D, m_unfilteredSurfaces);
+
+        GLCall(glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
                 GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D,
                 m_smoothedSurfaces,
-                0);
-            GLCall(glBindVertexArray(m_screenQuadVao));
+                0));
+
+        for(unsigned i = 0; i < m_nIterations; i++)
+        {
             GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 
+            glBindTexture(GL_TEXTURE_2D, 0);
+            GLCall(glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D,
+                0,
+                0));
+
             InvertWorkingAndSmoothedSurfaces();
+            GLCall(glBindTexture(GL_TEXTURE_2D, m_currentWorkingSurfaces));
+            GLCall(glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D,
+                m_smoothedSurfaces,
+                0));
         }
-        
+
         InvertWorkingAndSmoothedSurfaces();
+        GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+        GLCall(glBindVertexArray(0));
         m_bilateralFilter->Unbind();
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     }
